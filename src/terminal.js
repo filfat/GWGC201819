@@ -7,7 +7,7 @@ const cmd_list = {
     LS: (args, state) => ls(state),
     OPEN: (args, state) => open(state, args.join(' ')),
     PRINT: (args, { terminal }) => printf(terminal, args.join(' ')),
-    REBOOT: (args, state) => window.location.reload(),
+    REBOOT: (args, state) => { state.running = false; window.location.reload() },
     UNAME: (args, state) => printf(state, "KubrickOS 1.99\n(c) Heuristics LLC 2001"),
 };
 const cmd_list_help = {

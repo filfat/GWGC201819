@@ -72,7 +72,8 @@ let state = {
             ["empty", "empty", "empty", "empty", "empty", "empty"],
             ["empty", "empty", "empty", "empty", "empty", "empty"],
             ["empty", "empty", "empty", "empty", "empty", "empty"],
-        ]
+        ],
+        rendering: false,
     }
 }
 
@@ -97,7 +98,9 @@ const main = () => {
         crew.render(state);
         inventory.render(state);
 
-        map.render(state);
+        setTimeout(() => {
+            map.render(state);
+        }, 0);
 
         if(!state.running)
             clearInterval(game_loop);
