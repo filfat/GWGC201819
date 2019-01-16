@@ -2,13 +2,12 @@
 
 module.exports = {
     entry: [
-        './src/index.js',
-        './src/index.scss'
+        "./src/index.js"
     ],
     output: {
         path: __dirname,
-        publicPath: '/',
-        filename: 'bundle.js'
+        publicPath: "/",
+        filename: "bundle.js"
     },
     module: {
         rules: [
@@ -16,12 +15,13 @@ module.exports = {
                     test: /\.js$/,
                     exclude: /node_modules/,
                     use: {
-                    loader: "script-loader"
+                        loader: "babel-loader"
                     }
                 },
                 {
                     test: /\.(s*)css$/,
-                    use: ['style-loader','css-loader', 'sass-loader']
+                    exclude: /node_modules/,
+                    use: ["style-loader", "css-loader", "sass-loader"]
                 }
         ]
     }
