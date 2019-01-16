@@ -1,5 +1,4 @@
-const key_press = (terminal, key) => {
-
+const key_press = ({ terminal }, key) => {
     switch(key.keyCode) {
         case 8:     // BACKSPACE
         case 13:    // ENTER
@@ -13,7 +12,7 @@ const key_press = (terminal, key) => {
     return terminal.input;
 };
 
-const key_up = (terminal, key) => {
+const key_up = ({ terminal }, key) => {
     switch(key.keyCode) {
         case 8:     // BACKSPACE
             terminal.input = terminal.input.slice(0, -1);

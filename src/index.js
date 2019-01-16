@@ -1,6 +1,9 @@
 "use strict";
 import terminal from "./terminal";
 import input from "./input";
+import crew from "./crew";
+import inventory from "./inventory";
+import items from "./items";
 
 import "./index.scss";
 
@@ -10,27 +13,62 @@ let state = {
         element: document.querySelector(".terminal").querySelector(".content"),
         max_lines: 9,
         output: [
-            "SpaceOS 1.99 is starting...",
-            "(c) EVIL INC 2001\n"
+            "KubrickOS 1.99 is starting...",
+            "(c) Heuristics LLC 2001\n",
+            "For a list of commands type \"help\".\n",
         ],
 
         prefix: '> ',
         input: '',
         submit: false,
-    }
+    },
+
+    crew: {
+        element: document.querySelector(".side-by-side").querySelector(".lists").querySelector(".crew"),
+        max_items: 2,
+        members: [
+            {
+                id: 0,
+                selected: true,
+                name: "Kurt",
+                oxygen: 100,
+            },
+            {
+                id: 1,
+                selected: false,
+                name: "Kurt2",
+                oxygen: 100,
+            }
+        ],
+    },
+
+    inventory: {
+        element: document.querySelector(".side-by-side").querySelector(".lists").querySelector(".inventory"),
+        max_items: 30,
+        items: [
+            {
+                id: items.oxygen_tank.id,
+                selected: true,
+                value: items.oxygen_tank.default_value
+            }
+        ],
+    },
 }
 
 const main = () => {
-    window.addEventListener("keypress", (key) => { input.key_press(state.terminal, key); });
-    window.addEventListener("keyup", (key) => { input.key_up(state.terminal, key); });
+    window.addEventListener("keypress", (key) => { input.key_press(state, key); });
+    window.addEventListener("keyup", (key) => { input.key_up(state, key); });
 
     const game_loop = setInterval(() => {
-        terminal.render(state.terminal);
-        terminal.handle_command(state.terminal);
+        terminal.render(state);
+        terminal.handle_command(state);
+
+        crew.render(state);
+        inventory.render(state);
 
         if(!state.running)
             clearInterval(game_loop);
-    }, /*32*/100);
+    }, 32);
 
     // TODO: Cleanup
 }

@@ -77,8 +77,18 @@ html, body {
         }
         .lists {
             padding: 0px 0px 10px 10px;
-            margin-top: -20px;
-            white-space: pre-line;
+
+            .crew {
+                width: 306px; height: 35%;
+                white-space: pre;
+
+                border-bottom: 4px solid;
+            }
+
+            .inventory {
+                margin-top: 10px;
+                white-space: pre;
+            }
         }
     }
 
