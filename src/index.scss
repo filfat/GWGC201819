@@ -1,0 +1,48 @@
+@font-face {
+    font-family: "IBM Terminal";
+    src: url("/public/term.wof") format("woff2");
+}
+
+html, body {
+    overflow: hidden;
+    width: 1920px; height: 1080px;
+    padding: 0px;
+    margin: 0px;
+
+    font-smooth: never;
+    font-family: 'IBM Terminal', monospace;
+    text-shadow: 0 0 5px #194909;
+    -webkit-font-smoothing : none;
+    font-size: 22px;
+    font-weight: 600;
+
+    color: #247C10;
+    background-image: url("/public/gwgc201819_overlay.png");
+}
+
+* {
+    box-sizing: border-box;
+}
+
+#display1, #display2 {
+    position: absolute;
+    background: #000;
+    padding: 10px;
+}
+
+#display1 {
+    top: 183px; left: 60px;
+    width: 1024px;
+    height: 768px;
+
+    .terminal {
+        border-top: 4px solid;
+        white-space: pre-line;
+    }
+}
+
+#display2 {
+    right: 63px; top: 75px;
+    width: 720px;
+    height: 480px;
+}
