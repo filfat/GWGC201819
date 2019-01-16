@@ -3,7 +3,7 @@ import action from "./action_display";
 
 const cmd_list = {
     CLEAR: (args, { terminal }) => terminal.output = [],
-    HELP: (args, { terminal }) => help(terminal, args),
+    HELP: (args, state) => help(state, args),
     LS: (args, state) => ls(state),
     OPEN: (args, state) => open(state, args.join(' ')),
     PRINT: (args, { terminal }) => printf(terminal, args.join(' ')),
@@ -48,10 +48,10 @@ const handle_command = (state) => {
     args.shift();
 
     // TODO: command
-    if(cmd_list[command] !== undefined) cmd_list[command](args, state);
-    else printf(state, `Unknown command "${command}".`);
+    if(cmd_list[command] !== undefined) return cmd_list[command](args, state);
 
-    return true;
+    printf(state, `Unknown command "${command}".`);
+    return false;
 };
 
 const printf = ({ terminal }, text) => {
@@ -64,25 +64,25 @@ const help = (state, args) => {
     if (args.length)
         return;
     
-    let output = '';
+    let output = "Help\n=================";
     for(const cmd in cmd_list_help) {
         if(output) output += '\n';
         output += `${cmd}: ${(cmd_list_help[cmd]) || "No information available."}`;
     }
 
-    printf(state, output);
+    return action.set_text(state, output);
 }
 
 const ls = (state) => {
     const terminal = state.terminal;
-    let output = '';
+    let output = "Files on disket A:\n=================";
 
     for(const file in filesystem.files) {
         if(output) output += '\n';
         output += `${file}`;
     }
 
-    action.set_text(state, output);
+    return action.set_text(state, output);
 }
 
 const open = (state, file) => {
@@ -92,7 +92,12 @@ const open = (state, file) => {
     if(!file) return printf(terminal, "Usage: OPEN [filename]");
     else if (!f) return printf(terminal, `The file "${file}" does not exist!`);
 
-    action.set_text(state, f.content);
+    let output = file + "\n=================\n" + f.content;
+
+    action.set_text(state, `Loading "${file}"...`);
+    return setTimeout(() => {
+        return action.set_text(state, output);
+    }, 750);
 }
 
 export default {

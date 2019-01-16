@@ -1,5 +1,8 @@
 const default_files = {
     "ABOUT.TXT": {
+        content: `Created by Filiph Sandström for the GWGC2018/19 gamejam.`,
+    },
+    "MISSION.TXT": {
         content: `SUBJECT:
     Mission #103 briefing
 CONTENTS:

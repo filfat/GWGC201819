@@ -72,17 +72,20 @@ html, body {
         padding-bottom: 10px;
 
         .action {
-            width: 75%;
+            overflow: hidden;
+            width: 78%;
+            max-width: 78%;
             padding: 0px 10px 10px 0px;
             white-space: pre;
-            
+
             border-right: 4px solid;
+            text-transform: uppercase;
         }
         .lists {
             padding: 0px 0px 10px 10px;
 
             .crew {
-                width: 306px; height: 35%;
+                width: 300px; height: 35%;
                 white-space: pre;
 
                 border-bottom: 4px solid;
@@ -119,6 +122,7 @@ html, body {
     right: 63px; top: 75px;
     width: 720px;
     height: 480px;
+    padding: 0px; margin: 0px;
 }
 
 @keyframes flicker {

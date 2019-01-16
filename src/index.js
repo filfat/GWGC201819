@@ -1,5 +1,6 @@
 "use strict";
 import input from "./input";
+import map from "./map";
 import terminal from "./terminal";
 import action from "./action_display";
 import crew from "./crew";
@@ -62,11 +63,31 @@ let state = {
             }
         ],
     },
+
+    map: {
+        element: document.querySelector("#display2"),
+        data: [
+            ["empty", "empty", "empty", "empty", "empty", "empty"],
+            ["empty", "empty", "empty", "empty", "empty", "empty"],
+            ["empty", "empty", "empty", "empty", "empty", "empty"],
+            ["empty", "empty", "empty", "empty", "empty", "empty"],
+            ["empty", "empty", "empty", "empty", "empty", "empty"],
+        ]
+    }
 }
 
 const main = () => {
+    // Handle exit
+    window.addEventListener("beforeunload", (key) => (e) => {
+        state.running = false;
+    });
+
+    // Setup input
     window.addEventListener("keypress", (key) => { input.key_press(state, key); });
     window.addEventListener("keyup", (key) => { input.key_up(state, key); });
+
+    // Generate map
+    map.generate(state);
 
     const game_loop = setInterval(() => {
         terminal.render(state);
@@ -76,9 +97,11 @@ const main = () => {
         crew.render(state);
         inventory.render(state);
 
+        map.render(state);
+
         if(!state.running)
             clearInterval(game_loop);
-    }, 32);
+    }, /*32*/ 100);
 
     // TODO: Cleanup
 }
