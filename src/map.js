@@ -46,9 +46,13 @@ const tile_list = {
     },
 };
 
-const generate = ({ map }) => {
+const generate = ({ map, crew }) => {
     const starting_point = Math.floor(Math.random() * 6);
     const length = Math.floor(Math.random() * 15) + 5;
+
+    for (let i = 0; i < crew.members.length; i++) {
+        crew.members[i].x = starting_point;
+    }
 
     map.data[0][starting_point] = tile_list["starting_point"].id;
 

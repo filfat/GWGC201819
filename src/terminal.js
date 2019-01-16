@@ -8,6 +8,7 @@ const cmd_list = {
     OPEN: (args, state) => open(state, args.join(' ')),
     PRINT: (args, { terminal }) => printf(terminal, args.join(' ')),
     REBOOT: (args, state) => { state.running = false; window.location.reload() },
+    SELECT: (args, state) => select(state, args),
     UNAME: (args, state) => printf(state, "KubrickOS 1.99\n(c) Heuristics LLC 2001"),
 };
 const cmd_list_help = {
@@ -17,6 +18,7 @@ const cmd_list_help = {
     OPEN: "Opens a text file.",
     PRINT: "Displays a string.",
     REBOOT: "Reboots the system.",
+    SELECT: "Selects a crew member or an item.",
     UNAME: "Displays system information.",
 };
 
@@ -39,6 +41,7 @@ const handle_command = (state) => {
     const terminal = state.terminal;
     if(!terminal.submit) return false;
     printf(state, terminal.prefix + terminal.input);
+    terminal.history.entries.push(terminal.input);
 
     const command = terminal.input.split(' ')[0];
     const args = terminal.input.split(' ');
@@ -71,7 +74,7 @@ const help = (state, args) => {
     }
 
     return action.set_text(state, output);
-}
+};
 
 const ls = (state) => {
     const terminal = state.terminal;
@@ -83,14 +86,14 @@ const ls = (state) => {
     }
 
     return action.set_text(state, output);
-}
+};
 
 const open = (state, file) => {
     const terminal = state.terminal;
     const f = filesystem.files[file];
 
-    if(!file) return printf(terminal, "Usage: OPEN [filename]");
-    else if (!f) return printf(terminal, `The file "${file}" does not exist!`);
+    if(!file) return printf(state, "Usage: OPEN [filename]");
+    else if (!f) return printf(state, `The file "${file}" does not exist!`);
 
     let output = file + "\n=================\n" + f.content;
 
@@ -98,6 +101,34 @@ const open = (state, file) => {
     return setTimeout(() => {
         return action.set_text(state, output);
     }, 750);
+};
+
+const select = (state, args) => {
+    const terminal = state.terminal;
+    if((args.length <= 0) || args[1] !== 'FROM') return printf(state, "Usage: SELECT [n] FROM [CREW/INVENTORY]");
+
+    const position = (args[0] !== '*') ? parseInt(args[0]) : '*';
+    const from = args[2];
+
+    if(from === "CREW") {
+        if(position !== '*' && position > state.crew.members.length) return printf(state, `There's no crew member with id "${position}"`);
+        for(let i = 0; i < state.crew.members.length; i++) {
+            let member = state.crew.members[i];
+            if (position !== '*') member.selected = ((i + 1) == position ? true : false)
+            else member.selected = true;
+        }
+        return true;
+    } else if (from === "INVENTORY") {
+        if(position !== '*' && position > state.inventory.items.length) return printf(state, `There's no item with id "${position}"`);
+        for(let i = 0; i < state.inventory.items.length; i++) {
+            let item = state.inventory.items[i];
+            if (position !== '*') item.selected = ((i + 1) === position ? true : false)
+            else item.selected = true;
+        }
+        return true;
+    }
+
+    return false;
 }
 
 export default {

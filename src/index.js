@@ -23,6 +23,11 @@ let state = {
         prefix: '> ',
         input: '',
         submit: false,
+
+        history: {
+            position: -1,
+            entries: []
+        },
     },
 
     action: {
@@ -39,12 +44,14 @@ let state = {
         members: [
             {
                 id: 0,
+                x: 0, y: 0,
                 selected: true,
                 name: "Kurt",
                 oxygen: 100,
             },
             {
                 id: 1,
+                x: 0, y: 0,
                 selected: false,
                 name: "Kurt2",
                 oxygen: 100,
@@ -100,6 +107,7 @@ const main = () => {
 
         setTimeout(() => {
             map.render(state);
+            crew.render_map(state);
         }, 0);
 
         if(!state.running)
