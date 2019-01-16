@@ -1,6 +1,7 @@
 "use strict";
-import terminal from "./terminal";
 import input from "./input";
+import terminal from "./terminal";
+import action from "./action_display";
 import crew from "./crew";
 import inventory from "./inventory";
 import items from "./items";
@@ -21,6 +22,14 @@ let state = {
         prefix: '> ',
         input: '',
         submit: false,
+    },
+
+    action: {
+        element: document.querySelector(".side-by-side").querySelector(".action"),
+        engine: "text", // text or canvas
+
+        text_content: '',
+        canvas_render: null,
     },
 
     crew: {
@@ -62,7 +71,8 @@ const main = () => {
     const game_loop = setInterval(() => {
         terminal.render(state);
         terminal.handle_command(state);
-
+        
+        action.render(state);
         crew.render(state);
         inventory.render(state);
 

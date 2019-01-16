@@ -1,13 +1,14 @@
-import files from "./files";
+import filesystem from "./filesystem";
+import action from "./action_display";
 
 const cmd_list = {
-    CLEAR: (args, terminal) => terminal.output = [],
-    HELP: (args, terminal) => help(terminal, args),
-    LS: (args, terminal) => ls(terminal),
-    OPEN: (args, terminal) => open(terminal, args.join(' ')),
-    PRINT: (args, terminal) => printf(terminal, args.join(' ')),
-    REBOOT: (args, terminal) => window.location.reload(),
-    UNAME: (args, terminal) => printf(terminal, "KubrickOS 1.99\n(c) Heuristics LLC 2001"),
+    CLEAR: (args, { terminal }) => terminal.output = [],
+    HELP: (args, { terminal }) => help(terminal, args),
+    LS: (args, state) => ls(state),
+    OPEN: (args, state) => open(state, args.join(' ')),
+    PRINT: (args, { terminal }) => printf(terminal, args.join(' ')),
+    REBOOT: (args, state) => window.location.reload(),
+    UNAME: (args, state) => printf(state, "KubrickOS 1.99\n(c) Heuristics LLC 2001"),
 };
 const cmd_list_help = {
     CLEAR: "Clears the screen.",
@@ -34,9 +35,10 @@ const render = ({ terminal }) => {
     return true;
 };
 
-const handle_command = ({ terminal }) => {
+const handle_command = (state) => {
+    const terminal = state.terminal;
     if(!terminal.submit) return false;
-    printf(terminal, terminal.prefix + terminal.input);
+    printf(state, terminal.prefix + terminal.input);
 
     const command = terminal.input.split(' ')[0];
     const args = terminal.input.split(' ');
@@ -46,18 +48,19 @@ const handle_command = ({ terminal }) => {
     args.shift();
 
     // TODO: command
-    if(cmd_list[command] !== undefined) cmd_list[command](args, terminal);
-    else printf(terminal, `Unknown command "${command}".`);
+    if(cmd_list[command] !== undefined) cmd_list[command](args, state);
+    else printf(state, `Unknown command "${command}".`);
 
     return true;
 };
 
-const printf = (terminal, text) => {
+const printf = ({ terminal }, text) => {
     terminal.output.push(text);
     return true;
 };
 
-const help = (terminal, args) => {
+const help = (state, args) => {
+    const terminal = state.terminal;
     if (args.length)
         return;
     
@@ -67,26 +70,29 @@ const help = (terminal, args) => {
         output += `${cmd}: ${(cmd_list_help[cmd]) || "No information available."}`;
     }
 
-    printf(terminal, output);
+    printf(state, output);
 }
 
-const ls = (terminal) => {
+const ls = (state) => {
+    const terminal = state.terminal;
     let output = '';
 
-    for(const file in files) {
+    for(const file in filesystem.files) {
         if(output) output += '\n';
         output += `${file}`;
     }
 
-    printf(terminal, output);
+    action.set_text(state, output);
 }
 
-const open = (terminal, file) => {
-    const f = files[file];
+const open = (state, file) => {
+    const terminal = state.terminal;
+    const f = filesystem.files[file];
 
     if(!file) return printf(terminal, "Usage: OPEN [filename]");
     else if (!f) return printf(terminal, `The file "${file}" does not exist!`);
-    printf(terminal, f.content);
+
+    action.set_text(state, f.content);
 }
 
 export default {
