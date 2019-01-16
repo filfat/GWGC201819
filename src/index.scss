@@ -47,6 +47,7 @@ html, body {
     }
 
     &::after {
+        pointer-events: none;
         content: "";
         z-index: 999;
         position: absolute;
@@ -96,9 +97,11 @@ html, body {
         border-top: 4px solid;
 
         .content {
+            overflow-y: scroll;
+            height: 200px;
             margin-top: 10px;
             padding: 0px 0px 0px 10px;
-            white-space: pre-line;
+            white-space: pre;
             text-transform: uppercase;
 
             .cursor {

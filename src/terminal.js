@@ -1,6 +1,10 @@
+import files from "./files";
+
 const cmd_list = {
     CLEAR: (args, terminal) => terminal.output = [],
     HELP: (args, terminal) => help(terminal, args),
+    LS: (args, terminal) => ls(terminal),
+    OPEN: (args, terminal) => open(terminal, args.join(' ')),
     PRINT: (args, terminal) => printf(terminal, args.join(' ')),
     REBOOT: (args, terminal) => window.location.reload(),
     UNAME: (args, terminal) => printf(terminal, "KubrickOS 1.99\n(c) Heuristics LLC 2001"),
@@ -8,6 +12,8 @@ const cmd_list = {
 const cmd_list_help = {
     CLEAR: "Clears the screen.",
     HELP: "Provides help information.",
+    LS: "Lists files in a directory.",
+    OPEN: "Opens a text file.",
     PRINT: "Displays a string.",
     REBOOT: "Reboots the system.",
     UNAME: "Displays system information.",
@@ -62,6 +68,25 @@ const help = (terminal, args) => {
     }
 
     printf(terminal, output);
+}
+
+const ls = (terminal) => {
+    let output = '';
+
+    for(const file in files) {
+        if(output) output += '\n';
+        output += `${file}`;
+    }
+
+    printf(terminal, output);
+}
+
+const open = (terminal, file) => {
+    const f = files[file];
+
+    if(!file) return printf(terminal, "Usage: OPEN [filename]");
+    else if (!f) return printf(terminal, `The file "${file}" does not exist!`);
+    printf(terminal, f.content);
 }
 
 export default {
