@@ -1,12 +1,14 @@
 import filesystem from "./filesystem";
 import action from "./action_display";
+import crew from "./crew";
 
 const cmd_list = {
     CLEAR: (args, { terminal }) => terminal.output = [],
     HELP: (args, state) => help(state, args),
     LS: (args, state) => ls(state),
+    MOVE: (args, state) => crew.move_crew_member(state, args),
     OPEN: (args, state) => open(state, args.join(' ')),
-    PRINT: (args, { terminal }) => printf(terminal, args.join(' ')),
+    PRINT: (args, state) => printf(state, args.join(' ')),
     REBOOT: (args, state) => { state.running = false; window.location.reload() },
     SELECT: (args, state) => select(state, args),
     UNAME: (args, state) => printf(state, "KubrickOS 1.99\n(c) Heuristics LLC 2001"),
@@ -15,6 +17,7 @@ const cmd_list_help = {
     CLEAR: "Clears the screen.",
     HELP: "Provides help information.",
     LS: "Lists files in a directory.",
+    MOVE: "Moves the select crew member one step in the specified direction.",
     OPEN: "Opens a text file.",
     PRINT: "Displays a string.",
     REBOOT: "Reboots the system.",
@@ -58,6 +61,9 @@ const handle_command = (state) => {
 };
 
 const printf = ({ terminal }, text) => {
+    if(!terminal.output) terminal.output = [];
+    if(text.charAt(0) !== '>') console.log("terminal->printf->", text);
+
     terminal.output.push(text);
     return true;
 };
@@ -133,5 +139,7 @@ const select = (state, args) => {
 
 export default {
     render,
-    handle_command
+    handle_command,
+
+    printf
 };

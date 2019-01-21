@@ -7,6 +7,8 @@ import crew from "./crew";
 import inventory from "./inventory";
 import items from "./items";
 
+import game from './games/typing';
+
 import "./index.scss";
 
 let state = {
@@ -73,15 +75,11 @@ let state = {
 
     map: {
         element: document.querySelector("#display2"),
-        data: [
-            ["empty", "empty", "empty", "empty", "empty", "empty"],
-            ["empty", "empty", "empty", "empty", "empty", "empty"],
-            ["empty", "empty", "empty", "empty", "empty", "empty"],
-            ["empty", "empty", "empty", "empty", "empty", "empty"],
-            ["empty", "empty", "empty", "empty", "empty", "empty"],
-        ],
+        data: [],
         rendering: false,
-    }
+    },
+
+    game: {},
 }
 
 const main = () => {
@@ -95,9 +93,13 @@ const main = () => {
     window.addEventListener("keyup", (key) => { input.key_up(state, key); });
 
     // Generate map
-    map.generate(state);
+    setTimeout(() => {
+        map.generate(state);
+    }, 0);
 
     const game_loop = setInterval(() => {
+        if (!state.map.done) return;
+
         terminal.render(state);
         terminal.handle_command(state);
         

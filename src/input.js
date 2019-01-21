@@ -13,7 +13,6 @@ const key_press = ({ terminal }, key) => {
 };
 
 const key_up = ({ terminal }, key) => {
-    console.log(terminal.history);
     switch(key.keyCode) {
         case 8:     // BACKSPACE
             terminal.input = terminal.input.slice(0, -1);
