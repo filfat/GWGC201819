@@ -1,3 +1,11 @@
+import game_typing from './games/typing';
+import game_is_correct from "./games/is_correct";
+
+const hacker_games = [
+    game_typing,
+    game_is_correct
+];
+
 const room_width = 120;
 const room_height = 96;
 
@@ -171,6 +179,8 @@ const generate = (state) => {
 
         px = x;
         py = y;
+
+        map.data[py][px].path_id = (tiles_traveled);
         
         if (tiles_traveled < 0) tiles_traveled = 0;
         tiles_traveled++;
@@ -181,12 +191,10 @@ const generate = (state) => {
     else if(map.data[py][px].type.includes("_right")) map.data[py][px].type = tile_list["end_point_right"].id;
     else if(map.data[py][px].type.includes("_down")) map.data[py][px].type = tile_list["end_point_down"].id;
     else if(map.data[py][px].type.includes("_left")) map.data[py][px].type = tile_list["end_point_left"].id;
-    
-    console.log(map.data[py][px]);
 
     console.log("map->generate->tiles_traveled:", tiles_traveled, "out of", length);
 
-    if (tiles_traveled < length / 2) {
+    if (tiles_traveled < (length > 15 ? 15 : length)) {
         return setTimeout(() => generate(state), 0);
     }
 
@@ -194,8 +202,9 @@ const generate = (state) => {
     map.done = true;
 };
 
-const render = ({ map }) => {
+const render = ({ map, action }) => {
     if(map.rendering) return false;
+    else if(action.engine !== "text") return false;
 
     map.rendering = true;
     const ctx = map.element.querySelector("canvas").getContext("2d");
@@ -208,16 +217,20 @@ const render = ({ map }) => {
             const tile_data = map.data[y][x];
 
             ctx.lineWidth = "5"
-            if(tile !== "empty" /*&& tile_data.explored*/) {
+            // TODO: get current pathid(s) and show only the unexplored ones right next to it.
+            if(tile !== "empty") {
+                let color = "#247C10"
+                if (!tile_data.explored) color = "#194909";
+
                 ctx.beginPath();
-                ctx.strokeStyle = "#247C10";
-                ctx.rect((room_width * x) + 20, (room_height * y) + 20, (room_width - 40), (room_height - 40));
-                ctx.stroke();
+                ctx.strokeStyle = color;
+                if(tile_list[tile] && tile_list[tile].draw !== undefined) tile_list[tile].draw(ctx, x, y);
                 ctx.closePath();
 
                 ctx.beginPath();
-                ctx.strokeStyle = "#247C10";
-                if(tile_list[tile] && tile_list[tile].draw !== undefined) tile_list[tile].draw(ctx, x, y);
+                ctx.strokeStyle = color;
+                ctx.rect((room_width * x) + 20, (room_height * y) + 20, (room_width - 40), (room_height - 40));
+                ctx.stroke();
                 ctx.closePath();
             }
         }
@@ -226,12 +239,13 @@ const render = ({ map }) => {
     map.rendering = false;
 };
 
-const check_movement = ({ map }, from, to, dir) => {
+const check_movement = (state, from, to, dir) => {
+    const map = state.map;
     try {
         const from_tile = map.data[from.y][from.x] || {type: "empty"};
         const to_tile = map.data[to.y][to.x] || {type: "empty"};
 
-        console.log(dir, from_tile.type, to_tile.type);
+        console.log("map->check_movement-> dir: ", { dir, from_tile, to_tile });
 
         let possible = to_tile.type !== "starting_point" ? false : true;
         switch (dir) {
@@ -250,7 +264,11 @@ const check_movement = ({ map }, from, to, dir) => {
         }
 
         if (possible) {
-            map.data[to.y][to.x].explored = true;
+            if (!map.data[to.y][to.x].explored) {
+                state.action.engine = "canvas";
+                state.action.canvas_render = hacker_games[Math.floor(Math.random() * hacker_games.length)].render;
+                map.data[to.y][to.x].explored = true;
+            }
         }
         return possible;
 

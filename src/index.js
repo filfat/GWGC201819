@@ -5,9 +5,8 @@ import terminal from "./terminal";
 import action from "./action_display";
 import crew from "./crew";
 import inventory from "./inventory";
-import items from "./items";
 
-import game from './games/typing';
+import items from "./items";
 
 import "./index.scss";
 
@@ -114,7 +113,7 @@ const main = () => {
 
         if(!state.running)
             clearInterval(game_loop);
-    }, /*32*/ 100);
+    }, /*32*/ 64);
 
     // TODO: Cleanup
 }

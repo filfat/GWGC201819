@@ -43,6 +43,8 @@ const render = ({ terminal }) => {
 const handle_command = (state) => {
     const terminal = state.terminal;
     if(!terminal.submit) return false;
+    else if (state.action.engine !== "text") return false;
+
     printf(state, terminal.prefix + terminal.input);
     terminal.history.entries.push(terminal.input);
 

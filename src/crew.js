@@ -10,6 +10,9 @@ const render = ({ terminal, crew }) => {
     for (let i = 0; i < crew.members.length; i++) {
         const member = crew.members[i];
 
+        // Randomly remove 1% of oxygen
+        if((Math.floor(Math.random() * 1000) + 0) >= 999) crew.members[i].oxygen -= 1;
+
         output += (member.selected ? '> ' : '  ') + member.name + ` (${member.oxygen}%)\n`;
     }
 
@@ -17,7 +20,9 @@ const render = ({ terminal, crew }) => {
     return true;
 };
 
-const render_map = ({ terminal, crew, map }) => {
+const render_map = ({ terminal, crew, action, map }) => {
+    if(action.engine !== "text") return false;
+
     const ctx = map.element.querySelector("canvas").getContext("2d");
     
     ctx.fillStyle = "#247C10";
