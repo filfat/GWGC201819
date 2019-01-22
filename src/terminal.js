@@ -6,6 +6,7 @@ import mail from "./apps/mail";
 
 const cmd_list = {
     CLEAR: (args, state) => { state.terminal.output = []; action.set_text(state, ''); },
+    DEBUG: (args, state) => { debug(state) },
     HELP: (args, state) => help(state, args),
     LS: (args, state) => ls(state, args),
     MAIL: (args, state) => mail.cmd(state, args),
@@ -82,6 +83,22 @@ const printf = ({ terminal }, text) => {
 
     terminal.output.push(text);
     return true;
+};
+
+const debug = (state) => {
+    let copy_of_state = JSON.parse(JSON.stringify(state));
+    copy_of_state.running = undefined;
+    copy_of_state.terminal = {};
+    copy_of_state.action = {};
+    copy_of_state.action.engine = state.action.engine;
+    copy_of_state.crew = {};
+    copy_of_state.inventory = {};
+    copy_of_state.map = {};
+    copy_of_state.map.tiles_moved = state.map.tiles_moved;
+    copy_of_state.game = undefined;
+    copy_of_state.mail = {};
+
+    action.set_text(state, `${JSON.stringify(copy_of_state, 4, 4)}`);
 };
 
 const help = (state, args) => {

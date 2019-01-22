@@ -269,6 +269,8 @@ const check_movement = (state, from, to, dir) => {
                 state.action.canvas_render = hacker_games[Math.floor(Math.random() * hacker_games.length)].render;
                 map.data[to.y][to.x].explored = true;
             }
+
+            map.tiles_moved += 1;
         }
         return possible;
 

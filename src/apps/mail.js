@@ -12,7 +12,7 @@ const view_all = (state) => {
     for (let i = 0; i < mail.items.length; i++) {
         const item = mail.items[i];
 
-        output += `<div>* ${item.title}\n    ${item.content.substring(0, 25)}...</div>`;
+        output += `<div>${i + 1}. ${item.title}\n    ${item.content.substring(0, 25)}...</div>`;
     }
 
     output += `\n\nUse "MAIL open [n]" to open the specified mail.\n`;

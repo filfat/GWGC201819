@@ -76,6 +76,7 @@ let state = {
     map: {
         element: document.querySelector("#display2"),
         data: [],
+        tiles_moved: 0,
         rendering: false,
     },
 
