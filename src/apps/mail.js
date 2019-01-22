@@ -1,8 +1,27 @@
 import action from "../action_display";
 import terminal from "../terminal";
 
+const tick = (state) => {
+    switch(state.map.tiles_moved) {
+        case 1:
+            push(state, {
+                id: 1,
+                title: `Congratulations on your newly acquired "SuperTron #1000"`,
+                content: `The SuperTroon #1000 is newest and most advanced form\nof computation!\n`,
+                read: false
+            });
+            break;
+    }
+};
+
 const push = (state, item) => {
+    for (let i = 0; i < state.mail.items.length; i++) {
+        if (state.mail.items[i].id === item.id) return false;
+    }
+
     state.mail.items.push(item);
+    notification(state);
+    return true;
 };
 
 const view_all = (state) => {
@@ -57,6 +76,8 @@ const cmd = (state, args) => {
 };
 
 export default {
+    tick,
+
     push,
     notification,
 

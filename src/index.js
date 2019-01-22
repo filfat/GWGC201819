@@ -108,13 +108,12 @@ const main = () => {
     // Generate map
     setTimeout(() => {
         map.generate(state);
-
-        // Notify about the first mail
-        mail.notification(state);
     }, 0);
 
     const game_loop = setInterval(() => {
         if (!state.map.done) return;
+
+        mail.tick(state);
 
         terminal.render(state);
         terminal.handle_command(state);
