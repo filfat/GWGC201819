@@ -43,7 +43,6 @@ const render = ({ terminal }) => {
     output += terminal.prefix + terminal.input;
     output += '<div class="cursor"></div>'
 
-    console.log(output, terminal.element.innerHTML);
     if (output !== terminal.element.innerHTML)
         terminal.element.innerHTML = `${output}`;
     return true;
