@@ -68,7 +68,7 @@ const render = (state) => {
         state.terminal.prefix = "y/n? ";
 
     } else if (state.game.is_correct.amountDone >= state.game.is_correct.amount) {
-        state.terminal.prefix = "> ";
+        state.terminal.prefix = "&gt; ";
         state.terminal.input = '';
 
         // reset action state

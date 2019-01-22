@@ -47,7 +47,7 @@ const render = (state) => {
         state.game.typing.current_phrase = get_next_phrase(state);
         state.terminal.prefix = "enter code: ";
     } else if (state.game.typing.amountDone >= state.game.typing.amount) {
-        state.terminal.prefix = "> ";
+        state.terminal.prefix = "&gt; ";
         state.terminal.input = '';
 
         // reset action state

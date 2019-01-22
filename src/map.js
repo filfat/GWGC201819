@@ -104,7 +104,7 @@ const generate = (state) => {
     clear_map(state);
 
     const starting_point = Math.floor(Math.random() * 6);
-    const length = Math.floor(Math.random() * 15) + 10;
+    const length = 10; //Math.floor(Math.random() * 15) + 10;
 
     for (let i = 0; i < crew.members.length; i++) {
         crew.members[i].x = starting_point;

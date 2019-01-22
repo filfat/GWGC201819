@@ -6,12 +6,16 @@ export default {
 
         action: (state, self, target) => {
             const member = target;
-            member.oxygen += value;
+            let rest = 0;
+            member.oxygen += self.value;
 
             if (member.oxygen > 100) {
-                self.value = member.oxygen - 100;
+                rest = member.oxygen - 100;
+                self.value = rest;
                 member.oxygen = 100;
             }
+
+            return `"${member.name}" used ${100 - rest}% of the oxygen in the tank!`;
         },
         value_render: (state, self) => {
             return `(${self.value}%)`;

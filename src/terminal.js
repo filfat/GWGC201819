@@ -1,28 +1,34 @@
 import filesystem from "./filesystem";
 import action from "./action_display";
 import crew from "./crew";
+import inventory from "./inventory";
+import mail from "./apps/mail";
 
 const cmd_list = {
-    CLEAR: (args, { terminal }) => terminal.output = [],
+    CLEAR: (args, state) => { state.terminal.output = []; action.set_text(state, ''); },
     HELP: (args, state) => help(state, args),
-    LS: (args, state) => ls(state),
+    LS: (args, state) => ls(state, args),
+    MAIL: (args, state) => mail.cmd(state, args),
     MOVE: (args, state) => crew.move_crew_member(state, args),
     OPEN: (args, state) => open(state, args.join(' ')),
     PRINT: (args, state) => printf(state, args.join(' ')),
     REBOOT: (args, state) => { state.running = false; window.location.reload() },
     SELECT: (args, state) => select(state, args),
     UNAME: (args, state) => printf(state, "KubrickOS 1.99\n(c) Heuristics LLC 2001"),
+    USE: (args, state) => inventory.use(state),
 };
 const cmd_list_help = {
     CLEAR: "Clears the screen.",
     HELP: "Provides help information.",
     LS: "Lists files in a directory.",
+    MAIL: "Mail manager.", // FIXME: Update desc
     MOVE: "Moves the select crew member one step in the specified direction.",
     OPEN: "Opens a text file.",
     PRINT: "Displays a string.",
     REBOOT: "Reboots the system.",
     SELECT: "Selects a crew member or an item.",
     UNAME: "Displays system information.",
+    USE: "Uses the currently selected item on the currently selected crew member.",
 };
 
 const render = ({ terminal }) => {
@@ -35,8 +41,11 @@ const render = ({ terminal }) => {
 
     // Input
     output += terminal.prefix + terminal.input;
+    output += '<div class="cursor"></div>'
 
-    terminal.element.innerHTML = `${output}`;
+    console.log(output, terminal.element.innerHTML);
+    if (output !== terminal.element.innerHTML)
+        terminal.element.innerHTML = `${output}`;
     return true;
 };
 
@@ -55,7 +64,13 @@ const handle_command = (state) => {
 
     args.shift();
 
-    // TODO: command
+    // Scroll to bottom
+    setTimeout(() => {
+        terminal.element.scrollTop = terminal.element.scrollHeight - terminal.element.clientHeight;
+
+        //mail.notification(state);
+    }, 200);
+
     if(cmd_list[command] !== undefined) return cmd_list[command](args, state);
 
     printf(state, `Unknown command "${command}".`);
@@ -113,7 +128,7 @@ const open = (state, file) => {
 
 const select = (state, args) => {
     const terminal = state.terminal;
-    if((args.length <= 0) || args[1] !== 'FROM') return printf(state, "Usage: SELECT [n] FROM [CREW/INVENTORY]");
+    if((args.length <= 0) || args[1] !== 'FROM') return printf(state, "Usage: SELECT [n/*] FROM [CREW/INVENTORY]");
 
     const position = (args[0] !== '*') ? parseInt(args[0]) : '*';
     const from = args[2];

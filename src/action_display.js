@@ -17,9 +17,9 @@ const render = (state) => {
     return false;
 };
 
-const set_text = ({ action }, text) => {
-    action.engine = "text";
-    action.text_content = text;
+const set_text = (state, text) => {
+    state.action.engine = "text";
+    state.action.text_content = text;
     return true;
 }
 

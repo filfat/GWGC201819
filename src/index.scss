@@ -111,9 +111,14 @@ html, body {
             text-transform: uppercase;
 
             .cursor {
-                display: inline;
+                display: inline-block;
                 border-left: 10px solid;
-                margin-left: 5px;
+                margin: 0px 0px -3px 2px;
+
+                width: 10px;
+                height: 20px;
+
+                animation: blink 1s infinite;
             }
         }
     }
@@ -126,6 +131,17 @@ html, body {
     padding: 0px; margin: 0px;
 }
 
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
 @keyframes flicker {
     0% {
     opacity: 0.27861;

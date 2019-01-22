@@ -5,6 +5,7 @@ import terminal from "./terminal";
 import action from "./action_display";
 import crew from "./crew";
 import inventory from "./inventory";
+import mail from "./apps/mail";
 
 import items from "./items";
 
@@ -21,7 +22,7 @@ let state = {
             "For a list of commands type \"help\".\n",
         ],
 
-        prefix: '> ',
+        prefix: '&gt; ',
         input: '',
         submit: false,
 
@@ -79,6 +80,10 @@ let state = {
     },
 
     game: {},
+    
+    mail: {
+        items: []
+    }
 }
 
 const main = () => {
@@ -91,9 +96,20 @@ const main = () => {
     window.addEventListener("keypress", (key) => { input.key_press(state, key); });
     window.addEventListener("keyup", (key) => { input.key_up(state, key); });
 
+    // Add first story email
+    mail.push(state, {
+        id: 0,
+        title: "Howdy employee #23732",
+        content: "The file \"Mission.txt\" has been downloaded on to your\nterminal. Open it for more information.",
+        read: false
+    });
+
     // Generate map
     setTimeout(() => {
         map.generate(state);
+
+        // Notify about the first mail
+        mail.notification(state);
     }, 0);
 
     const game_loop = setInterval(() => {
